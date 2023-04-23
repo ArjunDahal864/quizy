@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView,CreateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 
-from mcq.serializers import OptionSerialier,QuestionSerialier
-from mcq.models import Option,Question
+from mcq.serializers import OptionSerialier,QuestionSerialier,McqAnswerSerialier,McqAnswerDepthSerialier
+from mcq.models import Option,Question,MCQAnswers
 
 # Create your views here.
 class ListOptions(ListAPIView):
@@ -20,3 +20,25 @@ class ListQuestions(ListAPIView):
     queryset = Question.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['subject']
+
+class ListMcqAnswers(ListAPIView):
+    serializer_class = McqAnswerDepthSerialier
+    queryset = MCQAnswers.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
+
+    def get_queryset(self):
+        return self.queryset.all().filter(user=self.request.user)
+        
+
+
+class CreateMcqAnswers(CreateAPIView):
+    serializer_class = McqAnswerSerialier
+    queryset = MCQAnswers.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user']
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    

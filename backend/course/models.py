@@ -12,6 +12,8 @@ class Course(models.Model):
         choices=CourseType.choices,
         default=CourseType.SEM,
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
             return self.name
     
@@ -19,18 +21,20 @@ class Course(models.Model):
 class Semester(models.Model):
     name = models.CharField("name", max_length=1)
     course = models.ForeignKey("Course",on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         if(self.course.type ==CourseType.SEM):  
             return self.course.name+"'s "+self.name+  " semester"
         return self.course.name+"'s "+self.name+  " year"
-    
 
 
 class Subject(models.Model):
     name =  models.CharField(max_length=50)
     semester = models.ForeignKey("Semester",on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
-    
